@@ -1281,7 +1281,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 		end)
 	end
 
-	local function Build()
+	function Build()
 		for _, Button in Buttons do
 			Button:Destroy()
 		end
