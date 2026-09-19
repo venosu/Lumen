@@ -1654,14 +1654,44 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 
 	local InitialState = Toggle.State == true
 
-	local Button = Add("TextButton", { Parent = self.LeftContent; Name = "Toggle"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFO(28, 14); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
-	local Indicator = Add("Frame", { Parent = Button; Name = "Indicator"; AnchorPoint = InitialState and V2(1, 0.5) or V2(0, 0.5); BackgroundColor3 = RGB(0, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = InitialState and UD2(1, -3, 0.5, 0) or UD2(0, 3, 0.5, 0); Size = UFO(10, 10); ZIndex = 2; }) :: Frame
-	local Overlay = Add("Frame", { Parent = Button; Name = "Overlay"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = InitialState and 0 or 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
+	local Button = Add("TextButton", {
+		Parent = self.LeftContent;
+		Name = "Toggle";
+		AutoButtonColor = false;
+		BackgroundColor3 = RGB(20, 20, 21);
+		BorderColor3 = RGB(0, 0, 0);
+		BorderSizePixel = 0;
+		FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal);
+		Size = UFO(28, 14);
+		Text = "";
+	}) :: TextButton
 	Add("UICorner", { Parent = Button; CornerRadius = UD(0, 6); })
-	Add("UICorner", { Parent = Indicator; CornerRadius = UD(1, 0); })
+	Add("UIStroke", { Parent = Button; ApplyStrokeMode = ASM.Border; Color = RGB(36, 37, 37); Thickness = 1; })
+
+	local Overlay = Add("Frame", {
+		Parent = Button;
+		Name = "Overlay";
+		BackgroundColor3 = RGB(255, 255, 255);
+		BackgroundTransparency = InitialState and 0 or 1;
+		BorderSizePixel = 0;
+		Size = UFS(1, 1);
+		ZIndex = 1;
+	}) :: Frame
 	Add("UICorner", { Parent = Overlay; CornerRadius = UD(0, 6); })
 	local ToggleGrad = Add("UIGradient", { Parent = Overlay; Color = CS{ CSK(0, Library.Theme.AccentDark), CSK(1, Library.Theme.Accent) }; Rotation = -90; })
 	Library.ThemeLink(ToggleGrad, "Gradient", "AccentDark", "Accent")
+
+	local Indicator = Add("Frame", {
+		Parent = Button;
+		Name = "Indicator";
+		AnchorPoint = InitialState and V2(1, 0.5) or V2(0, 0.5);
+		BackgroundColor3 = InitialState and RGB(255, 255, 255) or RGB(140, 144, 155);
+		BorderSizePixel = 0;
+		Position = InitialState and UD2(1, -2, 0.5, 0) or UD2(0, 2, 0.5, 0);
+		Size = UFO(10, 10);
+		ZIndex = 2;
+	}) :: Frame
+	Add("UICorner", { Parent = Indicator; CornerRadius = UD(1, 0); })
 
 	Toggle.Set = function(state: boolean?, Silent: boolean?)
 		if state == nil then
@@ -1669,8 +1699,12 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 		end
 		Toggle.State = state
 
+		Indicator.AnchorPoint = state and V2(1, 0.5) or V2(0, 0.5)
 		Tween(Overlay, { BackgroundTransparency = state and 0 or 1 }, 0.1)
-		Tween(Indicator, { Position = state and UD2(1, -3, 0.5, 0) or UD2(0, 3, 0.5, 0), AnchorPoint = state and V2(1, 0.5) or V2(0, 0.5)}, 0.1)
+		Tween(Indicator, {
+			Position = state and UD2(1, -2, 0.5, 0) or UD2(0, 2, 0.5, 0);
+			BackgroundColor3 = state and RGB(255, 255, 255) or RGB(140, 144, 155);
+		}, 0.1)
 
 		if Toggle.Flag then
 			Library.Flags[Toggle.Flag] = Library.Flags[Toggle.Flag] or {}
@@ -1693,7 +1727,7 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 
 	if propertyTable and propertyTable.Flag then
 		Toggle.Flag = propertyTable.Flag
-		Library.RegisterFlag(Toggle.Flag, { Value = Toggle.State; Set = Toggle.Set })
+		Library.RegisterFlag(Toggle.Flag, { Value = InitialState; Set = Toggle.Set })
 	end
 
 	Button.Activated:Connect(function()
