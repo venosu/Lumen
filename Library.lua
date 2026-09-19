@@ -1255,33 +1255,7 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 		Dropdown.Set(Selected)
 	end
 
-	local SearchBoxDrop = nil
-	if Dropdown.Search then
-		SearchBoxDrop = Add("TextBox", {
-			Parent = OptionList;
-			Name = "SearchBox";
-			BackgroundColor3 = RGB(20, 20, 21);
-			BorderSizePixel = 0;
-			ClearTextOnFocus = false;
-			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
-			PlaceholderText = "Search…";
-			PlaceholderColor3 = RGB(255, 255, 255);
-			Text = "";
-			TextColor3 = RGB(255, 255, 255);
-			TextSize = 13;
-			TextTransparency = 0.2;
-			TextXAlignment = TXA.Left;
-			Size = UD2(1, 0, 0, 26);
-			LayoutOrder = -1;
-		})
-		Add("UIPadding", { Parent = SearchBoxDrop; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
-		Add("UICorner", { Parent = SearchBoxDrop; CornerRadius = UD(0, 5); })
-		SearchBoxDrop:GetPropertyChangedSignal("Text"):Connect(function()
-			Build()
-		end)
-	end
-
-	function Build()
+	local function Build()
 		for _, Button in Buttons do
 			Button:Destroy()
 		end
@@ -1330,6 +1304,32 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 		end
 
 		Highlight()
+	end
+		
+	local SearchBoxDrop = nil
+	if Dropdown.Search then
+		SearchBoxDrop = Add("TextBox", {
+			Parent = OptionList;
+			Name = "SearchBox";
+			BackgroundColor3 = RGB(20, 20, 21);
+			BorderSizePixel = 0;
+			ClearTextOnFocus = false;
+			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
+			PlaceholderText = "Search…";
+			PlaceholderColor3 = RGB(255, 255, 255);
+			Text = "";
+			TextColor3 = RGB(255, 255, 255);
+			TextSize = 13;
+			TextTransparency = 0.2;
+			TextXAlignment = TXA.Left;
+			Size = UD2(1, 0, 0, 26);
+			LayoutOrder = -1;
+		})
+		Add("UIPadding", { Parent = SearchBoxDrop; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
+		Add("UICorner", { Parent = SearchBoxDrop; CornerRadius = UD(0, 5); })
+		SearchBoxDrop:GetPropertyChangedSignal("Text"):Connect(function()
+			Build()
+		end)
 	end
 
 	Dropdown.Set = function(Value: string | { string })
