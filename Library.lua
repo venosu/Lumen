@@ -1210,6 +1210,29 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 	local InputText = Add("TextButton", { Parent = InputFrame; Name = "Input"; BackgroundColor3 = RGB(20, 20, 21); BackgroundTransparency = 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal); Size = UD2(1, -24, 1, 0); Text = ""; TextColor3 = RGB(255, 255, 255); TextSize = 13; TextTransparency = 0.2; TextTruncate = ETT.SplitWord; TextXAlignment = TXA.Left; }) :: TextButton
 
 	local Buttons = {}
+	local SearchBoxDrop = nil
+
+	if Dropdown.Search then
+		SearchBoxDrop = Add("TextBox", {
+			Parent = OptionList;
+			Name = "SearchBox";
+			BackgroundColor3 = RGB(20, 20, 21);
+			BorderSizePixel = 0;
+			ClearTextOnFocus = false;
+			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
+			PlaceholderText = "Search…";
+			PlaceholderColor3 = RGB(255, 255, 255);
+			Text = "";
+			TextColor3 = RGB(255, 255, 255);
+			TextSize = 13;
+			TextTransparency = 0.2;
+			TextXAlignment = TXA.Left;
+			Size = UD2(1, 0, 0, 26);
+			LayoutOrder = -1;
+		})
+		Add("UIPadding", { Parent = SearchBoxDrop; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
+		Add("UICorner", { Parent = SearchBoxDrop; CornerRadius = UD(0, 5); })
+	end
 
 	local function GetMultiValue(): { string }
 		if type(Dropdown.Value) ~= "table" then
@@ -1305,28 +1328,8 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 
 		Highlight()
 	end
-		
-	local SearchBoxDrop = nil
-	if Dropdown.Search then
-		SearchBoxDrop = Add("TextBox", {
-			Parent = OptionList;
-			Name = "SearchBox";
-			BackgroundColor3 = RGB(20, 20, 21);
-			BorderSizePixel = 0;
-			ClearTextOnFocus = false;
-			FontFace = FN("rbxassetid://12187365364", FW.SemiBold, FS.Normal);
-			PlaceholderText = "Search…";
-			PlaceholderColor3 = RGB(255, 255, 255);
-			Text = "";
-			TextColor3 = RGB(255, 255, 255);
-			TextSize = 13;
-			TextTransparency = 0.2;
-			TextXAlignment = TXA.Left;
-			Size = UD2(1, 0, 0, 26);
-			LayoutOrder = -1;
-		})
-		Add("UIPadding", { Parent = SearchBoxDrop; PaddingLeft = UD(0, 10); PaddingRight = UD(0, 10); })
-		Add("UICorner", { Parent = SearchBoxDrop; CornerRadius = UD(0, 5); })
+
+	if SearchBoxDrop then
 		SearchBoxDrop:GetPropertyChangedSignal("Text"):Connect(function()
 			Build()
 		end)
@@ -1438,7 +1441,6 @@ Library.Elements.Dropdown = function(self: Library, propertyTable: {})
 	end
 
 	if Dropdown.Multi then
-
 		Dropdown.Set(type(Dropdown.Value) == "table" and Dropdown.Value or {})
 	else
 		Dropdown.Set(Dropdown.Value ~= "" and Dropdown.Value or Dropdown.Options[1] or "")
