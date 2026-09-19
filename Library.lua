@@ -1155,18 +1155,24 @@ Library.Elements.Slider = function(self: Library, propertyTable: {})
 	Add("UICorner", { Parent = Circle; CornerRadius = UD(1, 0); })
 
 	Slider.Set = function(Value: number)
-		Value = MC(MR(Value / Slider.Increment) * Slider.Increment, Slider.Min, Slider.Max)
-		Slider.Value = tonumber(SF(`%.{Decimals}f`, Value))
-
-		local Range = Slider.Max - Slider.Min
-		local Alpha = Range > 0 and (Slider.Value - Slider.Min) / Range or 0
-		local Fade = MC(1 - Alpha / 0.05, 0, 1)
-
-		Tween(Overlay, { Size = UD2(Alpha, 0, 1, 0); BackgroundTransparency = Fade }, 0.08)
-		Tween(Circle, { Position = UD2(Alpha, -3, 0.5, 0); BackgroundTransparency = Fade }, 0.08)
-
-		Amount.Text = SF(`%.{Decimals}f`, Slider.Value) .. Slider.Suffix
-		Slider.Callback(Slider.Value)
+	    Value = MC(MR(Value / Slider.Increment) * Slider.Increment, Slider.Min, Slider.Max)
+	    Slider.Value = tonumber(SF(`%.{Decimals}f`, Value))
+	
+	    local Range = Slider.Max - Slider.Min
+	    local Alpha = Range > 0 and (Slider.Value - Slider.Min) / Range or 0
+	    local Fade = MC(1 - Alpha / 0.05, 0, 1)
+	
+	    Tween(Overlay, { Size = UD2(Alpha, 0, 1, 0); BackgroundTransparency = Fade }, 0.08)
+	    Tween(Circle, { Position = UD2(Alpha, -3, 0.5, 0); BackgroundTransparency = Fade }, 0.08)
+	
+	    Amount.Text = SF(`%.{Decimals}f`, Slider.Value) .. Slider.Suffix
+	
+	    -- Sync value back to the flag registry
+	    if Slider.Flag and Library.Flags[Slider.Flag] then
+	        Library.Flags[Slider.Flag].Value = Slider.Value
+	    end
+	
+	    Slider.Callback(Slider.Value)
 	end
 
 	BindSlider(Button, function(Alpha)
