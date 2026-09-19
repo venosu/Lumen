@@ -1652,9 +1652,11 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 		Callback = function() end
 	}, propertyTable or {})
 
+	local InitialState = Toggle.State == true
+
 	local Button = Add("TextButton", { Parent = self.LeftContent; Name = "Toggle"; AutoButtonColor = false; BackgroundColor3 = RGB(20, 20, 21); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; FontFace = FN("rbxasset://fonts/families/SourceSansPro.json", FW.Regular, FS.Normal); Size = UFO(28, 14); Text = ""; TextColor3 = RGB(0, 0, 0); TextSize = 14; }) :: TextButton
-	local Indicator = Add("Frame", { Parent = Button; Name = "Indicator"; AnchorPoint = V2(1, 0.5); BackgroundColor3 = RGB(0, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = UD2(1, -3, 0.5, 0); Size = UFO(10, 10); ZIndex = 2; }) :: Frame
-	local Overlay = Add("Frame", { Parent = Button; Name = "Overlay"; BackgroundColor3 = RGB(255, 255, 255); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
+	local Indicator = Add("Frame", { Parent = Button; Name = "Indicator"; AnchorPoint = InitialState and V2(1, 0.5) or V2(0, 0.5); BackgroundColor3 = RGB(0, 0, 0); BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Position = InitialState and UD2(1, -3, 0.5, 0) or UD2(0, 3, 0.5, 0); Size = UFO(10, 10); ZIndex = 2; }) :: Frame
+	local Overlay = Add("Frame", { Parent = Button; Name = "Overlay"; BackgroundColor3 = RGB(255, 255, 255); BackgroundTransparency = InitialState and 0 or 1; BorderColor3 = RGB(0, 0, 0); BorderSizePixel = 0; Size = UFS(1, 1); }) :: Frame
 	Add("UICorner", { Parent = Button; CornerRadius = UD(0, 6); })
 	Add("UICorner", { Parent = Indicator; CornerRadius = UD(1, 0); })
 	Add("UICorner", { Parent = Overlay; CornerRadius = UD(0, 6); })
@@ -1662,7 +1664,9 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 	Library.ThemeLink(ToggleGrad, "Gradient", "AccentDark", "Accent")
 
 	Toggle.Set = function(state: boolean?, Silent: boolean?)
-		state = state or not Toggle.State
+		if state == nil then
+			state = not Toggle.State
+		end
 		Toggle.State = state
 
 		Tween(Overlay, { BackgroundTransparency = state and 0 or 1 }, 0.1)
@@ -1696,7 +1700,7 @@ Library.SubElements.Toggle = function(self: Library, propertyTable: {})
 		Toggle.Set()
 	end)
 
-	Toggle.Set(Toggle.State, true)
+	Toggle.Set(InitialState, true)
 	return Toggle
 end
 
